@@ -1,0 +1,6 @@
+{
+  "name": "e편한자동차운전전문학원",
+  "description": "안전하고 편안한 운전의 시작, 평택 e편한자동차운전전문학원입니다. 자체 시험 및 무료 셔틀 운행.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
