@@ -224,8 +224,11 @@ async function startServer() {
     res.json({ success: true });
   });
 
+  // Robust production check that works in CJS compiled file and doesn't crash ES Module in dev
+  const isProd = process.env.NODE_ENV === "production" || (typeof __filename !== "undefined" && __filename.endsWith(".cjs"));
+
   // Vite middleware for development
-  if (process.env.NODE_ENV !== "production") {
+  if (!isProd) {
     const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
