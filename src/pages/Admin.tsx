@@ -3,6 +3,7 @@ import { LogIn, Plus, Trash2, Image as ImageIcon, X, ShieldCheck, Car, LogOut } 
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/src/lib/utils';
 import { PageHeader } from '@/src/components/layout/PageHeader';
+import { apiFetch } from '@/src/lib/apiClient';
 
 export function Admin() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,7 +25,7 @@ export function Admin() {
 
   const fetchBanners = async () => {
     try {
-      const res = await fetch(`/api/banners?t=${Date.now()}`);
+      const res = await apiFetch(`/api/banners?t=${Date.now()}`);
       if (res.ok) {
         const data = await res.json();
         setBanners(data);
@@ -37,7 +38,7 @@ export function Admin() {
   const fetchConsultations = async () => {
     setIsRefreshingConsultations(true);
     try {
-      const res = await fetch(`/api/consultations?t=${Date.now()}`);
+      const res = await apiFetch(`/api/consultations?t=${Date.now()}`);
       if (res.ok) {
         const data = await res.json();
         setConsultations(data);
@@ -64,7 +65,7 @@ export function Admin() {
     setError('');
     setIsLoading(true);
     try {
-      const res = await fetch('/api/admin/login', {
+      const res = await apiFetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),
@@ -103,7 +104,7 @@ export function Admin() {
 
   const fetchImages = async () => {
     try {
-      const res = await fetch(`/api/gallery?t=${Date.now()}`);
+      const res = await apiFetch(`/api/gallery?t=${Date.now()}`);
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
       setImages(data);
@@ -124,7 +125,7 @@ export function Admin() {
     formData.append('image', selectedFile);
 
     try {
-      const res = await fetch('/api/gallery', {
+      const res = await apiFetch('/api/gallery', {
         method: 'POST',
         body: formData,
       });
@@ -152,7 +153,7 @@ export function Admin() {
     formData.append('image', selectedBannerFile);
 
     try {
-      const res = await fetch(`/api/banners/${selectedBannerCategory}`, {
+      const res = await apiFetch(`/api/banners/${selectedBannerCategory}`, {
         method: 'POST',
         body: formData,
       });
@@ -178,7 +179,7 @@ export function Admin() {
     setMessage(null);
     
     try {
-      const res = await fetch(`/api/gallery/${id}`, { method: 'DELETE' });
+      const res = await apiFetch(`/api/gallery/${id}`, { method: 'DELETE' });
       const data = await res.json();
       
       if (res.ok && data.success) {
@@ -199,7 +200,7 @@ export function Admin() {
   const handleToggleConsultationStatus = async (id: string, currentStatus: string) => {
     const nextStatus = currentStatus === 'pending' ? 'resolved' : 'pending';
     try {
-      const res = await fetch(`/api/consultations/${id}`, {
+      const res = await apiFetch(`/api/consultations/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: nextStatus })
@@ -219,7 +220,7 @@ export function Admin() {
   const handleDeleteConsultation = async (id: string) => {
     if (!window.confirm('이 상담 내역을 삭제하시겠습니까?')) return;
     try {
-      const res = await fetch(`/api/consultations/${id}`, { method: 'DELETE' });
+      const res = await apiFetch(`/api/consultations/${id}`, { method: 'DELETE' });
       if (res.ok) {
         await fetchConsultations();
         setMessage({ type: 'success', text: '상담 내역이 삭제되었습니다.' });

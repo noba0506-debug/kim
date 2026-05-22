@@ -2,12 +2,13 @@ import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import { Bus, MapPin, CheckCircle2, Navigation, CreditCard, Calculator, Coins, BookOpen, Clock, Settings, FileText, Check, Landmark, Info, Car } from 'lucide-react';
 import { PageHeader } from '@/src/components/layout/PageHeader';
+import { apiFetch } from '@/src/lib/apiClient';
 
 export function About() {
   const [bgImage, setBgImage] = useState('/hero_academy.jpg');
 
   useEffect(() => {
-    fetch('/api/banners')
+    apiFetch('/api/banners')
       .then(res => res.json())
       .then(data => {
         if (data.greetings) setBgImage(data.greetings);
@@ -123,7 +124,7 @@ export function Education() {
   const [bgImage, setBgImage] = useState('/hero_academy_2.jpg');
 
   useEffect(() => {
-    fetch('/api/banners')
+    apiFetch('/api/banners')
       .then(res => res.json())
       .then(data => {
         if (data.process) setBgImage(data.process);

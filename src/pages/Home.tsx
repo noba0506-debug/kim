@@ -3,6 +3,7 @@ import { ChevronRight, ShieldCheck, Car, Bus, MapPin, Clock, CreditCard } from '
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/src/lib/utils';
 import { useState, useEffect } from 'react';
+import { apiFetch } from '@/src/lib/apiClient';
 
 // --- Hero Section ---
 const SLIDES = [
@@ -265,7 +266,7 @@ function Gallery() {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
-    fetch(`/api/gallery?t=${Date.now()}`)
+    apiFetch(`/api/gallery?t=${Date.now()}`)
       .then(res => res.json())
       .then(data => setImages(data))
       .catch(err => console.error('Gallery fetch error:', err));

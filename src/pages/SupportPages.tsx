@@ -4,6 +4,7 @@ import { PageHeader } from '@/src/components/layout/PageHeader';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLocation } from 'react-router-dom';
+import { apiFetch } from '@/src/lib/apiClient';
 
 export function RoadTraining() {
   const [bgImage, setBgImage] = useState('/hero_academy_3.jpg');
@@ -21,7 +22,7 @@ export function RoadTraining() {
   });
 
   useEffect(() => {
-    fetch('/api/banners')
+    apiFetch('/api/banners')
       .then(res => res.json())
       .then(data => {
         if (data.road) setBgImage(data.road);
@@ -57,7 +58,7 @@ export function RoadTraining() {
     }
     
     try {
-      const res = await fetch('/api/consultations', {
+      const res = await apiFetch('/api/consultations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -442,7 +443,7 @@ export function Community() {
   });
 
   useEffect(() => {
-    fetch('/api/banners')
+    apiFetch('/api/banners')
       .then(res => res.json())
       .then(data => {
         if (data.community) setBgImage(data.community);

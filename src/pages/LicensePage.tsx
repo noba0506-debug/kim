@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { useState, useEffect, ReactNode } from 'react';
 import { Car, Truck, Bike, Compass, CheckCircle2, Award, Clock, ArrowRight, ShieldCheck, AlertCircle } from 'lucide-react';
 import { PageHeader } from '@/src/components/layout/PageHeader';
+import { apiFetch } from '@/src/lib/apiClient';
 
 interface LicenseDetail {
   id: string;
@@ -27,7 +28,7 @@ export default function LicensePage() {
   const [activeTab, setActiveTab] = useState<string>('ordinary');
 
   useEffect(() => {
-    fetch('/api/banners')
+    apiFetch('/api/banners')
       .then(res => res.json())
       .then(data => {
         if (data.license) setBgImage(data.license);
