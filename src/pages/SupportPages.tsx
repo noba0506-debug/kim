@@ -1,4 +1,4 @@
-import { Shield, Target, Heart, CheckCircle2, X, Phone, Calendar, User, Sparkles, AlertCircle } from 'lucide-react';
+import { Shield, Target, Heart, CheckCircle2, X, Phone, Calendar, User, Sparkles, AlertCircle, MessageSquare, Edit3, Eye, Search, ArrowLeft, Send, Check, Plus } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 import { PageHeader } from '@/src/components/layout/PageHeader';
 import React, { useState, useEffect } from 'react';
@@ -384,8 +384,62 @@ export function RoadTraining() {
   );
 }
 
+const DEFAULT_POSTS = [
+  { 
+    id: "post-1", 
+    tag: "공지", 
+    title: "방학 맞이 속성반 선착순 모집 중!", 
+    content: "안녕하세요. e편한운전전문학원입니다.\n\n다가오는 여름 방학을 맞이하여 전 과정 단기 합격을 위한 '여름방학 특별 속성반'을 특별 개편해 선착순 수강생을 모집하고 있습니다.\n\n■ 모집 대상: 단기 취득을 희망하시는 대학생, 직장인, 일반인\n■ 특별 혜택: 수강료 즉시 할인 적용 + 무료 모바일 학과 교재 제공 + 평택/안성 등 무료 전역 셔틀버스 연동 매칭!\n■ 특징: 학내 자체 시험을 통해 수강생 개개인 맞춤형 밀착 훈련 지도로 높은 원패스 합격을 보장합니다.\n\n편안하게 무료 전화 상담(031-656-2004) 또는 실시간 카카오톡으로 질문 주시면 신속하게 조율해 드리겠습니다.",
+    author: "관리자", 
+    date: "2026.05.20", 
+    views: 142 
+  },
+  { 
+    id: "post-2", 
+    tag: "이벤트", 
+    title: "2종 소형/원동기 등록 즉시 오토바이 탑승 교육!", 
+    content: "안녕하세요. e편한입니다!\n\n최상의 기동성과 재미를 선사하는 2종 소형/원동기 바이크 면허 훈련생을 상시 모집합니다.\n\n저희 학원은 대기 기간 일절 없이 당일 즉시 교육이 가능한 원스톱 훈련 연습차량 융통을 실시 중입니다. 혼다 CBR250 등 최신 차종으로 초보자분들도 굴절, S자 코스 등을 완벽 마스터하도록 전문 강사진이 안전 가이드를 제공합니다.\n\n■ 당일 즉시 승차 훈련 기능 진행\n■ 전용 기능 훈련 자체 시험장 완비\n\n지금 바로 준비하셔서 안전하고 근사한 라이더 라이프를 시작해 보세요!",
+    author: "관리자", 
+    date: "2026.05.18", 
+    views: 95 
+  },
+  { 
+    id: "post-3", 
+    tag: "안내", 
+    title: "무료 셔틀버스 노선 개편 안내 (죽백동 추가)", 
+    content: "학원을 오고 가시는 수강생 여러분의 더 쾌적하고 편안한 이동 셔틀을 조율하기 위해 무료 통학 차량 셔틀버스를 신규 노선 전면 투입 개편합니다.\n\n■ 적용 개편일: 2026년 6월 1일부터 전면 시행\n■ 추가 노선: 죽백동 동부고속화도로 부근 입주 단지 노선 신설 추가\n■ 기존 활수지:\n  - 평택역/평택터미널/동삭동/소사벌지구 일대 수시 운영\n  - 안성 공도 및 평택 남부권 노선 집중\n\n수업 전후 시간대에 맞춰 탑승을 원하시는 분들은 최소 1시간 전에 셔틀 담당 부장님 또는 고객 원무과(031-656-2004)에 신청하시면 기사님께서 수강생님의 인접 대기지에서 안전하게 탑승하실 수 있도록 도와드립니다.",
+    author: "관리자", 
+    date: "2026.05.15", 
+    views: 78 
+  },
+  { 
+    id: "post-4", 
+    tag: "후기", 
+    title: "드디어 1종 보통 한 번에 합격했어요! 강사님 최고!", 
+    content: "운전면허 따려고 평택이랑 안성 주변 학원들 엄청 알아보다가 친절하다는 후기 보고 e편한 등록했습니다.\n\n처음에 클러치 밟고 변속할 때 시동 정말 10번은 꺼트린 것 같아서 울고 싶었는데, 담당 강사님께서 화 한 번 안 내시고 '괜찮아요, 다들 처음엔 그래요' 하고 웃어주셔서 안심하고 연습할 수 있었어요.\n\n기능도 감점 없이 바로 통과하고 도로주행 코스도 설명해 주신 포인트들 머리에 그리면서 주행했더니 높은 점수로 한 번에 합격했습니다! \n\n고민하시는 분들 여기 베테랑 강사님들 믿고 등록하세요. e편한 최고입니다!",
+    author: "정현우", 
+    date: "2026.05.10", 
+    views: 231 
+  }
+];
+
 export function Community() {
   const [bgImage, setBgImage] = useState('/hero_academy_2.jpg');
+  const [posts, setPosts] = useState<any[]>([]);
+  const [selectedTab, setSelectedTab] = useState("전체");
+  const [searchQuery, setSearchQuery] = useState("");
+  
+  // Modals status
+  const [writeModalOpen, setWriteModalOpen] = useState(false);
+  const [activePost, setActivePost] = useState<any | null>(null);
+  
+  // Write Form layout
+  const [newPost, setNewPost] = useState({
+    tag: "질문",
+    title: "",
+    author: "",
+    content: "",
+  });
 
   useEffect(() => {
     fetch('/api/banners')
@@ -396,12 +450,123 @@ export function Community() {
       .catch(err => console.error(err));
   }, []);
 
-  const posts = [
-    { tag: "공지", title: "방학 맞이 속성반 선착순 모집 중!", date: "2024.05.20" },
-    { tag: "이벤트", title: "2종 소형/원동기 등록 즉시 교육 가능!", date: "2024.05.18" },
-    { tag: "안내", title: "무료 셔틀버스 노선 개편 안내 (죽백동 추가)", date: "2024.05.15" },
-    { tag: "후기", title: "드디어 면허 땄어요! 친절한 강사님 감사합니다.", date: "2024.05.10" },
-  ];
+  // Initialize posts from localStorage or default
+  useEffect(() => {
+    const stored = localStorage.getItem('ephyeon_community_posts');
+    if (stored) {
+      try {
+        setPosts(JSON.parse(stored));
+      } catch (e) {
+        setPosts(DEFAULT_POSTS);
+        localStorage.setItem('ephyeon_community_posts', JSON.stringify(DEFAULT_POSTS));
+      }
+    } else {
+      localStorage.setItem('ephyeon_community_posts', JSON.stringify(DEFAULT_POSTS));
+      setPosts(DEFAULT_POSTS);
+    }
+  }, []);
+
+  // Filter posts
+  const filteredPosts = posts.filter(post => {
+    // 1. Tab filter
+    let matchesTab = true;
+    if (selectedTab === "공지/안내") {
+      matchesTab = ["공지", "이벤트", "안내"].includes(post.tag);
+    } else if (selectedTab === "질문답변 (Q&A)") {
+      matchesTab = post.tag === "질문";
+    } else if (selectedTab === "합격후기") {
+      matchesTab = post.tag === "후기";
+    }
+
+    // 2. Search filter
+    const matchesSearch = searchQuery.trim() === "" || 
+      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.author.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesTab && matchesSearch;
+  });
+
+  const handlePostClick = (post: any) => {
+    // Increment view count dynamically
+    const updated = posts.map(p => {
+      if (p.id === post.id) {
+        return { ...p, views: (p.views || 0) + 1 };
+      }
+      return p;
+    });
+    setPosts(updated);
+    localStorage.setItem('ephyeon_community_posts', JSON.stringify(updated));
+    setActivePost({ ...post, views: (post.views || 0) + 1 });
+  };
+
+  const handleCreatePost = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPost.title.trim() || !newPost.author.trim() || !newPost.content.trim()) {
+      alert("모든 필드를 기입해 주세요.");
+      return;
+    }
+
+    const today = new Date();
+    const formattedDate = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
+    
+    const newId = `post-${Date.now()}`;
+    const newlyCreated = {
+      id: newId,
+      tag: newPost.tag,
+      title: newPost.title,
+      content: newPost.content,
+      author: newPost.author,
+      date: formattedDate,
+      views: 0
+    };
+
+    const updated = [newlyCreated, ...posts];
+    setPosts(updated);
+    localStorage.setItem('ephyeon_community_posts', JSON.stringify(updated));
+
+    // Reset writing form & close
+    setWriteModalOpen(false);
+    const savedTag = newPost.tag;
+    setNewPost({
+      tag: "질문",
+      title: "",
+      author: "",
+      content: "",
+    });
+
+    // Simulate auto-reply from Administrator if tag is "질문"
+    if (savedTag === "질문") {
+      setTimeout(() => {
+        const storedList = JSON.parse(localStorage.getItem('ephyeon_community_posts') || '[]');
+        const targetIdx = storedList.findIndex((p: any) => p.id === newId);
+        if (targetIdx !== -1) {
+          storedList[targetIdx].answer = `수강생님 안녕하십니까! e편한자동차운전전문학원 대표 실시간 소통 메신저입니다. 소중한 상담 질문을 남겨 주셔서 진심으로 감사드립니다.\n\n문의하신 해당 면허 취득 과정의 세부 일정 편성과 특별 할인 등록 패키지에 관한 맞춤 일정 상담은 저희 전문적인 전산 실시간 매칭 팀이 상주하는 안내 매칭 센터(☎ 031-656-2004)로 전화 한 통 주시거나 하단 노란색 '카카오톡 실시간 상담' 링크를 통해 문자 남겨주시면, 담당 행정 주임님께서 연락처 대기를 조회하여 당일 등록 가용반 및 셔틀버스 통학 연동 개설까지 신중하고 시원하게 원플랜 조율 안내해 드리겠습니다.\n\n수강생님의 편안하고 빠른 합격을 위해 언제나 성심을 다하겠습니다. 감사합니다!`;
+          localStorage.setItem('ephyeon_community_posts', JSON.stringify(storedList));
+          
+          setPosts(storedList);
+          
+          // If user currently has this newly created post open in detail, push response
+          setActivePost((current: any) => {
+            if (current && current.id === newId) {
+              return { ...current, answer: storedList[targetIdx].answer };
+            }
+            return current;
+          });
+        }
+      }, 1500);
+    }
+  };
+
+  const handleGoToQna = () => {
+    setSelectedTab("질문답변 (Q&A)");
+    const section = document.getElementById("community-board-section");
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const TABS = ["전체", "공지/안내", "질문답변 (Q&A)", "합격후기"];
 
   return (
     <div>
@@ -413,33 +578,112 @@ export function Community() {
         bgImage={bgImage}
       />
 
-      <section className="py-24 bg-white">
+      <section id="community-board-section" className="py-24 bg-white scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-16">
+          
+          {/* Header & Controls */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
             <div>
-              <h2 className="text-3xl font-bold">공지사항 및 소식</h2>
+              <h2 className="text-3xl font-bold">소통 및 질문 답변</h2>
               <div className="w-12 h-1 bg-brand-blue mt-4 rounded-full" />
             </div>
-            <div className="flex gap-2">
-              <button className="px-8 py-3 bg-brand-navy text-white rounded-xl font-bold text-sm hover:bg-brand-blue-dark transition-colors shadow-lg">글쓰기</button>
+            
+            {/* Action Group */}
+            <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
+              {/* Search Bar */}
+              <div className="relative flex-grow md:flex-grow-0 md:w-72">
+                <input 
+                  type="text" 
+                  placeholder="제목, 내용, 작성자 검색..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-brand-gray/50 border border-gray-100 rounded-2xl text-xs font-semibold focus:border-brand-blue focus:bg-white outline-none transition-all placeholder:text-gray-400"
+                />
+                <Search size={14} className="absolute left-3.5 top-4 text-gray-400" />
+              </div>
+
+              {/* Write Button */}
+              <button 
+                onClick={() => setWriteModalOpen(true)}
+                className="px-6 py-3 bg-brand-navy text-white rounded-2xl font-bold text-xs hover:bg-brand-blue-dark transition-all shadow-md flex items-center gap-2 cursor-pointer"
+              >
+                <Plus size={14} />
+                <span>글쓰기</span>
+              </button>
             </div>
           </div>
 
-          <div className="bg-white border-y border-gray-100 divide-y divide-gray-50">
-            {posts.map((post, idx) => (
-              <div key={idx} className="py-6 flex flex-col md:flex-row gap-4 md:items-center justify-between group cursor-pointer hover:bg-brand-gray/50 px-4 transition-colors">
-                <div className="flex items-center gap-6">
-                  <span className={cn(
-                    "text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest",
-                    post.tag === "공지" ? "bg-red-50 text-red-500" : "bg-brand-blue text-brand-blue-dark"
-                  )}>
-                    {post.tag}
-                  </span>
-                  <h3 className="font-bold text-brand-navy group-hover:text-brand-blue-dark transition-colors">{post.title}</h3>
-                </div>
-                <span className="text-xs text-gray-400 font-medium">{post.date}</span>
-              </div>
+          {/* Navigation Filter Tabs */}
+          <div className="flex gap-2 overflow-x-auto pb-4 mb-8 -mx-4 px-4 scrollbar-hide">
+            {TABS.map(tab => (
+              <button
+                key={tab}
+                onClick={() => setSelectedTab(tab)}
+                className={cn(
+                  "px-6 py-3 rounded-2xl text-xs font-bold shrink-0 transition-all cursor-pointer",
+                  selectedTab === tab 
+                    ? "bg-brand-navy text-white shadow-lg" 
+                    : "bg-brand-gray text-gray-400 hover:bg-gray-100"
+                )}
+              >
+                {tab}
+              </button>
             ))}
+          </div>
+
+          {/* Posts List */}
+          <div className="bg-white border border-gray-100 rounded-[2rem] overflow-hidden shadow-sm divide-y divide-gray-50">
+            {filteredPosts.length > 0 ? (
+              filteredPosts.map((post) => (
+                <div 
+                  key={post.id} 
+                  onClick={() => handlePostClick(post)}
+                  className="p-6 flex flex-col md:flex-row gap-4 md:items-center justify-between group cursor-pointer hover:bg-brand-gray/40 transition-colors"
+                >
+                  <div className="flex items-start md:items-center gap-4 flex-1">
+                    <span className={cn(
+                      "text-[9px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest shrink-0 text-center min-w-[54px]",
+                      post.tag === "공지" && "bg-red-50 text-red-500",
+                      post.tag === "이벤트" && "bg-amber-50 text-amber-600",
+                      post.tag === "안내" && "bg-indigo-50 text-indigo-500",
+                      post.tag === "후기" && "bg-emerald-50 text-emerald-600",
+                      post.tag === "질문" && "bg-blue-50 text-blue-500"
+                    )}>
+                      {post.tag}
+                    </span>
+                    <div className="space-y-1">
+                      <h3 className="font-bold text-brand-navy group-hover:text-brand-blue-dark transition-colors line-clamp-1">
+                        {post.title}
+                      </h3>
+                      <div className="flex items-center gap-3 text-[11px] text-gray-400 font-medium">
+                        <span>{post.author}</span>
+                        <span className="w-1 h-1 bg-gray-200 rounded-full" />
+                        <span className="flex items-center gap-1">
+                          <Eye size={12} /> {post.views || 0}
+                        </span>
+                        {post.tag === "질문" && (
+                          <>
+                            <span className="w-1 h-1 bg-gray-200 rounded-full" />
+                            <span className={cn(
+                              "font-bold",
+                              post.answer ? "text-emerald-500" : "text-gray-300"
+                            )}>
+                              {post.answer ? "답변완료" : "답변대기"}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-xs text-gray-400 font-semibold md:shrink-0">{post.date}</span>
+                </div>
+              ))
+            ) : (
+              <div className="py-20 text-center space-y-4">
+                <MessageSquare size={32} className="text-gray-200 mx-auto" />
+                <p className="text-sm font-semibold text-gray-400">검색 조건에 맞는 게시글이 없습니다.</p>
+              </div>
+            )}
           </div>
 
           <div className="mt-12 flex justify-center gap-2">
@@ -455,16 +699,225 @@ export function Community() {
         </div>
       </section>
 
+      {/* Write Post Modal Dialogue (AnimatePresence) */}
+      <AnimatePresence>
+        {writeModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setWriteModalOpen(false)}
+              className="absolute inset-0 bg-brand-navy/60 backdrop-blur-sm"
+            />
+            
+            <motion.div 
+              initial={{ scale: 0.95, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.95, y: 20, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden relative z-10 max-h-[90vh] flex flex-col border border-gray-100"
+            >
+              <div className="p-6 md:p-8 bg-brand-navy text-white relative">
+                <button 
+                  onClick={() => setWriteModalOpen(false)}
+                  className="absolute top-6 right-6 text-white/70 hover:text-white hover:bg-white/10 p-1.5 rounded-full transition-colors outline-none cursor-pointer"
+                >
+                  <X size={20} />
+                </button>
+                <div className="flex items-center gap-2 text-brand-yellow text-xs font-bold uppercase tracking-widest mb-2">
+                  <Sparkles size={14} />
+                  <span>Interactive board module</span>
+                </div>
+                <h3 className="text-xl md:text-2xl font-black">소통 및 질문 글쓰기</h3>
+                <p className="text-xs text-white/60 mt-1">이곳에 궁금하신 점이나 합격 경험을 다같이 소통 가능하도록 기재해 주세요.</p>
+              </div>
+
+              <div className="p-6 md:p-8 overflow-y-auto flex-1">
+                <form onSubmit={handleCreatePost} className="space-y-5">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 mb-2">카테고리</label>
+                      <select 
+                        value={newPost.tag}
+                        onChange={(e) => setNewPost({...newPost, tag: e.target.value})}
+                        className="w-full px-4 py-3 bg-brand-gray/50 border border-gray-100 rounded-xl font-semibold text-xs focus:border-brand-blue focus:bg-white outline-none cursor-pointer"
+                      >
+                        <option value="질문">질문 답변 (Q&A)</option>
+                        <option value="후기">합격후기 (Review)</option>
+                        <option value="안내">자유게시판</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 mb-2">성함 / 닉네임</label>
+                      <input 
+                        type="text" 
+                        placeholder="작성자 명"
+                        value={newPost.author}
+                        onChange={(e) => setNewPost({...newPost, author: e.target.value})}
+                        className="w-full px-4 py-3 bg-brand-gray/50 border border-gray-100 rounded-xl font-semibold text-xs focus:border-brand-blue focus:bg-white outline-none"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 mb-2">게시글 제목</label>
+                    <input 
+                      type="text" 
+                      placeholder="제목을 명확하게 입력해 주세요."
+                      value={newPost.title}
+                      onChange={(e) => setNewPost({...newPost, title: e.target.value})}
+                      className="w-full px-4 py-3 bg-brand-gray/50 border border-gray-100 rounded-xl font-semibold text-xs focus:border-brand-blue focus:bg-white outline-none"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 mb-2">상세 대본 기재</label>
+                    <textarea 
+                      rows={5}
+                      placeholder="질문이나 후기의 내용을 성의껏 기고하여 주십시오. e편한 강사단이 친절하게 코칭을 준비해 드립니다."
+                      value={newPost.content}
+                      onChange={(e) => setNewPost({...newPost, content: e.target.value})}
+                      className="w-full px-4 py-3 bg-brand-gray/50 border border-gray-100 rounded-xl font-semibold text-xs focus:border-brand-blue focus:bg-white outline-none resize-none"
+                      required
+                    />
+                  </div>
+
+                  <button 
+                    type="submit"
+                    className="w-full bg-brand-yellow text-brand-navy py-4 rounded-xl font-bold text-xs hover:shadow-lg transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer outline-none"
+                  >
+                    <CheckCircle2 size={15} /> 작성 마무리 및 등록 완료
+                  </button>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Post Detail Dialog (AnimatePresence) */}
+      <AnimatePresence>
+        {activePost && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setActivePost(null)}
+              className="absolute inset-0 bg-brand-navy/60 backdrop-blur-sm"
+            />
+
+            <motion.div 
+              initial={{ scale: 0.95, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.95, y: 20, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden relative z-10 max-h-[90vh] flex flex-col border border-gray-100"
+            >
+              {/* Header Container */}
+              <div className="p-6 md:p-8 bg-brand-navy text-white relative">
+                <button 
+                  onClick={() => setActivePost(null)}
+                  className="absolute top-6 right-6 text-white/70 hover:text-white hover:bg-white/10 p-1.5 rounded-full transition-colors outline-none cursor-pointer"
+                >
+                  <X size={20} />
+                </button>
+                <div className="flex items-center gap-2">
+                  <span className={cn(
+                    "text-[8px] font-extrabold px-2.5 py-1 rounded-md uppercase tracking-wider shrink-0",
+                    activePost.tag === "공지" && "bg-red-500 text-white",
+                    activePost.tag === "이벤트" && "bg-amber-500 text-white",
+                    activePost.tag === "안내" && "bg-indigo-500 text-white",
+                    activePost.tag === "후기" && "bg-emerald-500 text-white",
+                    activePost.tag === "질문" && "bg-blue-500 text-white"
+                  )}>
+                    {activePost.tag}
+                  </span>
+                  <span className="text-xs text-white/40">{activePost.date}</span>
+                </div>
+                <h3 className="text-xl md:text-2xl font-black mt-3 leading-tight">{activePost.title}</h3>
+                
+                <div className="flex items-center gap-3 text-xs text-white/60 mt-4 font-semibold">
+                  <span>작성자: {activePost.author}</span>
+                  <span className="w-1 h-1 bg-white/20 rounded-full" />
+                  <span>조회 {activePost.views}</span>
+                </div>
+              </div>
+
+              {/* Body Content */}
+              <div className="p-6 md:p-8 overflow-y-auto flex-1 space-y-6">
+                
+                {/* Content text */}
+                <div className="text-sm text-gray-700 leading-relaxed font-semibold whitespace-pre-wrap">
+                  {activePost.content}
+                </div>
+
+                {/* Question & Answer (Official) */}
+                {activePost.tag === "질문" && (
+                  <div className="border-t border-gray-50 pt-6">
+                    {activePost.answer ? (
+                      <div className="bg-brand-gray/60 border border-gray-100 p-6 rounded-[2rem] space-y-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 bg-brand-navy rounded-lg flex items-center justify-center text-white shrink-0">
+                            <Sparkles size={12} fill="#fff" />
+                          </div>
+                          <span className="text-xs font-black text-brand-navy">학원 공식 안내 답변</span>
+                        </div>
+                        <p className="text-xs font-semibold text-gray-500 leading-relaxed whitespace-pre-wrap">
+                          {activePost.answer}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="bg-blue-50/50 border border-blue-100/50 p-6 rounded-[2rem] flex flex-col items-center justify-center text-center space-y-2">
+                        <div className="w-10 h-10 bg-blue-100/50 text-blue-500 rounded-2xl flex items-center justify-center">
+                          <MessageSquare size={18} />
+                        </div>
+                        <h4 className="text-xs font-bold text-blue-600">친절 답변을 준비하고 있습니다</h4>
+                        <p className="text-[11px] font-semibold text-blue-400 max-w-sm leading-relaxed">
+                          수강생님의 질문이 원활히 접수되어 관리 전담 전산원이 신중하게 조율 중에 있습니다. 영업시간 내외로 신속하게 안내 답안이 하단에 기재될 예정입니다.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Close Button at bottom */}
+                <div className="pt-4 flex justify-end">
+                  <button
+                    onClick={() => setActivePost(null)}
+                    className="px-6 py-2.5 bg-brand-navy text-white hover:bg-brand-blue-dark rounded-xl font-bold text-xs cursor-pointer transition-colors"
+                  >
+                    목록으로 돌아가기
+                  </button>
+                </div>
+
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       {/* Online Consultation */}
       <section className="py-24 bg-brand-gray">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">궁금한 점이 있으신가요?</h2>
           <p className="text-gray-500 mb-12">1:1 실시간 상담이나 질문 답변 게시판을 통해 언제든 문의주세요.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <button className="bg-[#FFE812] text-[#3c1e1e] py-6 rounded-3xl font-bold flex items-center justify-center gap-3 hover:scale-105 transition-transform">
+            <a 
+              href="https://pf.kakao.com/_zbsaxj" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="bg-[#FFE812] text-[#3c1e1e] py-6 rounded-3xl font-bold flex items-center justify-center gap-3 hover:scale-105 transition-transform"
+            >
               카카오톡 실시간 상담
-            </button>
-            <button className="bg-white text-brand-navy border border-gray-200 py-6 rounded-3xl font-bold flex items-center justify-center gap-3 hover:shadow-xl transition-all">
+            </a>
+            <button 
+              onClick={handleGoToQna}
+              className="bg-white text-brand-navy border border-gray-200 py-6 rounded-3xl font-bold flex items-center justify-center gap-3 hover:shadow-xl transition-all cursor-pointer"
+            >
               질문 답변 게시판
             </button>
           </div>

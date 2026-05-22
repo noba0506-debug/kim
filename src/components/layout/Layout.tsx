@@ -21,7 +21,7 @@ export function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-bottom border-gray-100">
       <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
         <NavLink to="/">
-          <Logo size={36} textClassName="hidden sm:flex" />
+          <Logo size={36} textClassName="flex" />
         </NavLink>
 
         {/* Desktop GNB */}
@@ -164,7 +164,7 @@ export function Footer() {
       {/* Floating Buttons */}
       <div className="fixed bottom-6 right-6 z-[60] flex flex-col gap-3">
         <a 
-          href="https://pf.kakao.com/_your_channel_id" // 실제 카카오톡 채널 이나 오픈채팅 주소로 교체하세요.
+          href="https://pf.kakao.com/_zbsaxj" // 실제 카카오톡 채널 이나 오픈채팅 주소로 교체하세요.
           target="_blank" 
           rel="noopener noreferrer"
           className="bg-[#FFE812] text-[#3c1e1e] w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform cursor-pointer"

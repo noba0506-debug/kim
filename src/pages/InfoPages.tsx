@@ -195,18 +195,18 @@ export function Education() {
               <tbody className="text-sm">
                 <tr className="border-bottom border-gray-50">
                   <td className="py-6 px-4 font-bold">학과 교육</td>
-                  <td className="py-6 px-4 text-center text-gray-500">09:00 - 12:00</td>
-                  <td className="py-6 px-4 text-center text-gray-500">13:00 - 16:00</td>
+                  <td className="py-6 px-4 text-center text-gray-500">09:00 - 12:50</td>
+                  <td className="py-6 px-4 text-center text-gray-500">14:00 - 17:50</td>
                 </tr>
                 <tr className="border-bottom border-gray-50">
                   <td className="py-6 px-4 font-bold">기능 교육</td>
-                  <td className="py-6 px-4 text-center text-gray-500">08:00 - 12:00</td>
-                  <td className="py-6 px-4 text-center text-gray-500">13:00 - 17:00</td>
+                  <td className="py-6 px-4 text-center text-gray-500">09:00 - 12:50</td>
+                  <td className="py-6 px-4 text-center text-gray-500">14:00 - 17:50</td>
                 </tr>
                 <tr>
                   <td className="py-6 px-4 font-bold">도로주행 교육</td>
-                  <td className="py-6 px-4 text-center text-gray-500">08:00 - 12:00</td>
-                  <td className="py-6 px-4 text-center text-gray-500">13:00 - 17:00</td>
+                  <td className="py-6 px-4 text-center text-gray-500">09:00 - 12:50</td>
+                  <td className="py-6 px-4 text-center text-gray-500">14:00 - 17:50</td>
                 </tr>
               </tbody>
             </table>
@@ -407,8 +407,8 @@ export function Education() {
                     <span className="text-lg font-black text-brand-blue-dark mt-1 block">294000원</span>
                   </div>
                   <div className="border-l border-gray-100 pl-3">
-                    <span className="text-[10px] text-gray-400 font-semibold block">10시간 심화 특별교육</span>
-                    <span className="text-lg font-black text-brand-blue-dark mt-1 block">448,000원</span>
+                    <span className="text-[10px] text-gray-400 font-semibold block">8시간 심화 특별교육</span>
+                    <span className="text-lg font-black text-brand-blue-dark mt-1 block">392,000원</span>
                   </div>
                 </div>
                 <p className="text-[10px] text-gray-400 font-semibold leading-relaxed">

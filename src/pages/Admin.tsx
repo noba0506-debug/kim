@@ -61,20 +61,35 @@ export function Admin() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch('/api/admin/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password }),
-    });
-    const data = await res.json();
-    if (data.success) {
-      localStorage.setItem('adminToken', 'admin-token-mock');
-      setIsLoggedIn(true);
-      fetchImages();
-      fetchBanners();
-      fetchConsultations();
-    } else {
-      setError(data.message);
+    setError('');
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+      
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('서버가 JSON 형식의 올바른 응답을 제공하지 못했습니다. (배포 서버 환경 점검 필요)');
+      }
+
+      const data = await res.json();
+      if (data.success) {
+        localStorage.setItem('adminToken', 'admin-token-mock');
+        setIsLoggedIn(true);
+        fetchImages();
+        fetchBanners();
+        fetchConsultations();
+      } else {
+        setError(data.message || '비밀번호가 올바르지 않습니다.');
+      }
+    } catch (err: any) {
+      console.error('Login dynamic catch error:', err);
+      setError(err.message || '로그인 서버와 연결할 수 없습니다. 잠시 후 다시 고침하여 시도해 주십시오.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -234,14 +249,19 @@ export function Admin() {
           <form onSubmit={handleLogin} className="space-y-4">
             <input
               type="password"
-              placeholder="비밀번호 (2004)"
+              placeholder={isLoading ? "인증 확인 중..." : "비밀번호 (2004)"}
               value={password}
+              disabled={isLoading}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-6 py-4 bg-brand-gray rounded-2xl outline-none focus:ring-2 ring-brand-blue-dark transition-all"
+              className="w-full px-6 py-4 bg-brand-gray rounded-2xl outline-none focus:ring-2 ring-brand-blue-dark transition-all disabled:opacity-50"
             />
             {error && <p className="text-red-500 text-xs font-bold">{error}</p>}
-            <button className="w-full bg-brand-navy text-white py-4 rounded-2xl font-bold hover:bg-black transition-colors">
-              로그인
+            <button 
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-brand-navy text-white py-4 rounded-2xl font-bold hover:bg-black transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer"
+            >
+              {isLoading ? '인증 처리 중...' : '로그인'}
             </button>
           </form>
         </motion.div>
@@ -375,13 +395,22 @@ export function Admin() {
                           {c.status === 'resolved' ? '처리 완료' : '답변 대기중'}
                         </span>
                         <span className="text-[10px] text-gray-400 font-medium">
-                          {new Date(c.createdAt).toLocaleString('ko-KR', {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
+                          {c.createdAt ? (
+                            (() => {
+                              try {
+                                const d = new Date(c.createdAt);
+                                return isNaN(d.getTime()) ? '날짜 없음' : d.toLocaleString('ko-KR', {
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                });
+                              } catch {
+                                return '날짜 오류';
+                              }
+                            })()
+                          ) : '날짜 없음'}
                         </span>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-y-2 gap-x-4 text-xs font-semibold text-gray-500 bg-brand-gray/30 p-3 rounded-xl border border-gray-50">

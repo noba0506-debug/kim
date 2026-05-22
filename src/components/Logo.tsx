@@ -69,11 +69,11 @@ export function Logo({
         {showText && (
           <div className={`flex items-center flex-wrap ${textClassName}`}>
             {/* "이편한" in bold, italic-styled blue */}
-            <span className="font-extrabold italic text-2xl tracking-tight text-[#0051C4] mr-1.5 transform -skew-x-6">
+            <span className="font-extrabold italic text-base sm:text-2xl tracking-tight text-[#0051C4] mr-1 transform -skew-x-6">
               이편한
             </span>
             {/* "자동차운전전문학원" in bold dark charcoal/navy or white */}
-            <span className={`font-bold text-2xl tracking-tight ${textColorClass}`}>
+            <span className={`font-bold text-base sm:text-2xl tracking-tight ${textColorClass}`}>
               자동차운전전문학원
             </span>
           </div>
