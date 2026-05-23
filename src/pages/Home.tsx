@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronRight, ShieldCheck, Car, Bus, MapPin, Clock, CreditCard } from 'lucide-react';
+import { ChevronRight, ShieldCheck, Car, Bus, MapPin, Clock, CreditCard, Play, X } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/src/lib/utils';
 import { useState, useEffect } from 'react';
@@ -264,6 +264,62 @@ function LicenseCategories() {
 // --- Media & Gallery ---
 function Gallery() {
   const [images, setImages] = useState([]);
+  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
+
+  // [유튜브 동영상 설정 안내]
+  // 아래 'youtubeId' 값에 원하시는 유튜브 영상의 ID(예: https://www.youtube.com/watch?v=W7H6yv9SHeo 에서 'W7H6yv9SHeo')를 입력하시면
+  // 웹사이트 홈 화면에서 실시간 팝업 모달창으로 영상이 즉시 재생됩니다.
+  // 주소창의 전체 URL 주소를 그대로 입력하셔도 시스템이 자동으로 비디오 ID를 추출하여 안전하게 영상을 로드합니다.
+  const academyVideos = [
+    {
+      id: "course-a",
+      youtubeId: "https://www.youtube.com/watch?v=GSR6_ir0eHU", // 변경하고 싶으신 유튜브 비디오 ID 혹은 전체 주소를 넣으세요!
+      title: "도로주행 A 코스 가이드",
+      category: "A/B Course Guide",
+      thumbnail: "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=800"
+    },
+    {
+      id: "course-b",
+      youtubeId: "https://www.youtube.com/watch?v=P-ZfCFLUOxY", // 변경하고 싶으신 유튜브 비디오 ID 혹은 전체 주소를 넣으세요!
+      title: "도로주행 B 코스 가이드",
+      category: "A/B Course Guide",
+      thumbnail: "https://images.unsplash.com/photo-1453491920231-a8ef9113d216?q=80&w=800"
+    },
+    {
+      id: "course-c",
+      youtubeId: "https://www.youtube.com/watch?v=zTPIT4nGImE&t=110s", // [세번째 비디오] 변경하고 싶으신 유튜브 비디오 ID 혹은 전체 주소를 여기에 넣으세요!
+      title: "도로주행 C 코스 가이드",
+      category: "C/D Course Guide",
+      thumbnail: "https://images.unsplash.com/photo-1449965072395-657187ca45ff?q=80&w=800"
+    },
+    {
+      id: "course-d",
+      youtubeId: "https://www.youtube.com/watch?v=CLc4KTptHBc&t=5s", // [네번째 비디오] 변경하고 싶으신 유튜브 비디오 ID 혹은 전체 주소를 여기에 넣으세요!
+      title: "도로주행 D 코스 가이드",
+      category: "C/D Course Guide",
+      thumbnail: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=800"
+    }
+  ];
+
+  // Helper function to extract 11-character YouTube video ID from various URL formats
+  const getYouTubeId = (urlOrId: string): string => {
+    if (!urlOrId) return "";
+    const trimmed = urlOrId.trim();
+    // If it's already a simple 11-char ID and doesn't contain url elements, return it
+    if (!trimmed.includes("/") && !trimmed.includes("?")) {
+      return trimmed;
+    }
+    try {
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = trimmed.match(regExp);
+      if (match && match[2] && match[2].length === 11) {
+        return match[2];
+      }
+    } catch (e) {
+      console.error("YouTube URL parsing error:", e);
+    }
+    return trimmed;
+  };
 
   useEffect(() => {
     apiFetch(`/api/gallery?t=${Date.now()}`)
@@ -287,17 +343,29 @@ function Gallery() {
 
         {/* Video Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-          {[1, 2].map((i) => (
-             <div key={i} className="group relative aspect-video rounded-[2rem] overflow-hidden bg-brand-gray cursor-pointer">
-               <img src={`https://images.unsplash.com/photo-1453491920231-a8ef9113d216?q=80&w=800`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" referrerPolicy="no-referrer" />
-               <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center pl-1 shadow-2xl">
-                   <div className="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-brand-navy border-b-8 border-b-transparent"></div>
+          {academyVideos.map((video) => (
+             <div 
+               key={video.id} 
+               onClick={() => setActiveVideoId(video.youtubeId)}
+               className="group relative aspect-video rounded-[2rem] overflow-hidden bg-brand-gray cursor-pointer shadow-sm hover:shadow-md transition-shadow"
+             >
+               <img 
+                 src={video.thumbnail} 
+                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                 referrerPolicy="no-referrer" 
+                 alt={video.title}
+               />
+               
+               {/* Accent Overlay */}
+               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors flex items-center justify-center">
+                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center pl-1 shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                   <Play size={24} className="text-brand-navy fill-brand-navy ml-0.5" />
                  </div>
                </div>
-               <div className="absolute bottom-6 left-6 text-white">
-                 <p className="text-xs font-bold opacity-70 mb-1">YouTube Course Guide</p>
-                 <h4 className="font-bold">도로주행 {i === 1 ? 'A, B' : 'C, D'} 코스 가이드</h4>
+               
+               <div className="absolute bottom-6 left-6 text-white z-10">
+                 <p className="text-xs font-bold opacity-70 mb-1">{video.category}</p>
+                 <h4 className="font-bold text-lg">{video.title}</h4>
                </div>
              </div>
           ))}
@@ -323,6 +391,42 @@ function Gallery() {
           ))}
         </div>
       </div>
+
+      {/* YouTube Video Modal Player */}
+      <AnimatePresence>
+        {activeVideoId && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8"
+            onClick={() => setActiveVideoId(null)}
+          >
+            <div 
+              className="relative w-full max-w-4xl aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button 
+                onClick={() => setActiveVideoId(null)}
+                className="absolute top-4 right-4 z-50 p-2 bg-white/20 hover:bg-white/40 text-white rounded-full transition-colors cursor-pointer"
+                title="닫기"
+              >
+                <X size={20} />
+              </button>
+
+              {/* YouTube Iframe */}
+              <iframe
+                title="YouTube Video Player"
+                className="w-full h-full border-0"
+                src={`https://www.youtube.com/embed/${getYouTubeId(activeVideoId)}?autoplay=1&rel=0`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

@@ -129,13 +129,16 @@ export function Admin() {
         method: 'POST',
         body: formData,
       });
+      const data = await res.json();
       if (res.ok) {
         setTitle('');
         setSelectedFile(null);
+        const fileInput = document.getElementById('gallery-file-input') as HTMLInputElement;
+        if (fileInput) fileInput.value = '';
         await fetchImages();
         setMessage({ type: 'success', text: '이미지가 성공적으로 등록되었습니다.' });
       } else {
-        setMessage({ type: 'error', text: '이미지 등록에 실패했습니다.' });
+        setMessage({ type: 'error', text: data.message || '이미지 등록에 실패했습니다.' });
       }
     } catch (err) {
       setMessage({ type: 'error', text: '서버 통신 오류가 발생했습니다.' });
@@ -483,6 +486,7 @@ export function Admin() {
                   <div>
                     <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Image File</label>
                     <input
+                      id="gallery-file-input"
                       type="file"
                       required
                       accept="image/*"

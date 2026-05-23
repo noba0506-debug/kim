@@ -9,12 +9,57 @@
  * 100% functional on dry static hosting.
  */
 
-// Helper to convert File to Base64 for custom localStorage storage
-const readFileAsDataURL = (file: File): Promise<string> => {
+// Compress image file to JPEG base64 to prevent exceeding browser localStorage 5MB quota
+const compressImage = (file: File, maxW = 1200, maxH = 1200, quality = 0.8): Promise<string> => {
   return new Promise((resolve, reject) => {
+    // If it's not an image, fallback to standard reading
+    if (!file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+      return;
+    }
+
     const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let width = img.width;
+        let height = img.height;
+
+        // Maintain aspect ratio while resizing down to a crisp max resolution
+        if (width > height) {
+          if (width > maxW) {
+            height = Math.round((height * maxW) / width);
+            width = maxW;
+          }
+        } else {
+          if (height > maxH) {
+            width = Math.round((width * maxH) / height);
+            height = maxH;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          resolve(e.target?.result as string); // fallback to original base64
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
+        // Compress as jpeg with excellent quality (0.8 is the Sweet Spot for web visuals)
+        const compressedBase64 = canvas.toDataURL("image/jpeg", quality);
+        resolve(compressedBase64);
+      };
+      img.onerror = () => reject(new Error("이미지 파일을 읽을 수 없습니다."));
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => reject(new Error("파일을 읽을 수 없습니다."));
     reader.readAsDataURL(file);
   });
 };
@@ -106,14 +151,21 @@ async function handleMockRequest(url: string, options?: RequestInit): Promise<Re
       const file = formData.get("image") as File;
       if (file) {
         try {
-          const base64Url = await readFileAsDataURL(file);
+          const base64Url = await compressImage(file);
           const bannersStr = localStorage.getItem("app_banners");
           const banners = bannersStr ? JSON.parse(bannersStr) : { ...DEFAULT_BANNERS };
           banners[category] = base64Url;
           localStorage.setItem("app_banners", JSON.stringify(banners));
           return createJSONResponse({ success: true, url: base64Url });
-        } catch (e) {
-          return createJSONResponse({ success: false, message: "배너 로컬 저장 중 오류 발생" }, 500);
+        } catch (e: any) {
+          console.error("Banner upload error:", e);
+          if (e.name === 'QuotaExceededError' || e.message?.includes('quota') || e.code === 22) {
+            return createJSONResponse({ 
+              success: false, 
+              message: "저장 용량이 부족합니다. 등록된 갤러리 이미지 중 일부를 삭제하여 공간을 확보해 주세요." 
+            }, 500);
+          }
+          return createJSONResponse({ success: false, message: e.message || "배너 로컬 저장 중 오류 발생" }, 500);
         }
       }
     }
@@ -134,15 +186,22 @@ async function handleMockRequest(url: string, options?: RequestInit): Promise<Re
       const file = formData.get("image") as File;
       if (file) {
         try {
-          const base64Url = await readFileAsDataURL(file);
+          const base64Url = await compressImage(file);
           const galleryStr = localStorage.getItem("app_gallery");
           const gallery = galleryStr ? JSON.parse(galleryStr) : [...DEFAULT_GALLERY];
           const newImage = { id: Date.now(), url: base64Url, title };
           gallery.push(newImage);
           localStorage.setItem("app_gallery", JSON.stringify(gallery));
           return createJSONResponse(newImage);
-        } catch (e) {
-          return createJSONResponse({ success: false, message: "이미지 로컬 변환에 실패했습니다." }, 500);
+        } catch (e: any) {
+          console.error("Gallery storage error:", e);
+          if (e.name === 'QuotaExceededError' || e.message?.includes('quota') || e.code === 22) {
+            return createJSONResponse({ 
+              success: false, 
+              message: "용량 초과! 브라우저 저장 공간(5MB)이 가득 찼습니다. 기존 이미지 중 일부를 삭제한 후 다시 시도해 주세요." 
+            }, 500);
+          }
+          return createJSONResponse({ success: false, message: e.message || "이미지 로컬 변환에 실패했습니다." }, 500);
         }
       }
     }
