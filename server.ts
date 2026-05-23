@@ -32,7 +32,7 @@ function loadGallery() {
     }
   }
   return [
-    { id: 1, url: "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=800&auto=format&fit=crop", title: "학원 전경" },
+    { id: 1, url: "/hero_academy.jpg", title: "학원 외경" },
     { id: 2, url: "https://images.unsplash.com/photo-1449965072395-657187ca45ff?q=80&w=800&auto=format&fit=crop", title: "최신 연습 차량" },
     { id: 3, url: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=800&auto=format&fit=crop", title: "야간 교육 현장" },
     { id: 4, url: "https://images.unsplash.com/photo-1517524204709-440d89c258d4?q=80&w=800&auto=format&fit=crop", title: "쾌적한 대기실" },

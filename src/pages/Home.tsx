@@ -174,14 +174,14 @@ function LicenseCategories() {
       title: "1종 / 2종 보통", 
       desc: "기초부터 도로주행까지 완벽 마스터", 
       detail: "자체 시험 코스 영상 연동으로 이미지 트레이닝",
-      img: "/academy_trucks.jpg"
+      img: "/hero_academy_2.jpg"
     },
     { 
       id: 'large', 
       title: "1종 대형", 
       desc: "취업 / 공무원 가산점 필수 코스", 
       detail: "넓은 대형 전용 연습장 보유, 쉽고 빠른 취득",
-      img: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=600"
+      img: "/bus.jpg"
     },
     { 
       id: 'moto', 
@@ -195,7 +195,7 @@ function LicenseCategories() {
       title: "소형 견인 (캠핑카)", 
       desc: "레저의 시작, 빠르고 쉬운 공식 전수", 
       detail: "여행을 좋아하는 당신을 위한 특별 코스",
-      img: "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?q=80&w=600"
+      img: "/towing.png"
     },
   ];
 
