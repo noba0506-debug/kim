@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { cn } from '@/src/lib/utils';
 import { useState, useEffect } from 'react';
 import { apiFetch } from '@/src/lib/apiClient';
+import NoticePopup from '@/src/components/NoticePopup';
 
 // --- Hero Section ---
 const SLIDES = [
@@ -434,6 +435,7 @@ function Gallery() {
 export default function Home() {
   return (
     <div className="overflow-x-hidden">
+      <NoticePopup />
       <Hero />
       
       {/* Academy Introduction Section */}
